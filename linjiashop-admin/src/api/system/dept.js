@@ -13,6 +13,12 @@ export function list() {
     method: 'get',
   })
 }
+export function roleList() {
+  return request({
+    url: '/role/list',
+    method: 'get',
+  })
+}
 
 export function save(params) {
   return request({

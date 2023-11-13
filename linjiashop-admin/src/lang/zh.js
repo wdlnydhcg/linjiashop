@@ -28,6 +28,7 @@ export default {
     msgSender: '消息发送器',
     shopMgr: '商城管理',
     shopUser: '会员管理',
+    shopHome: '首页管理',
     shopUserDetail: '用户详情',
     category: '商品类别',
     goods: '商品管理',

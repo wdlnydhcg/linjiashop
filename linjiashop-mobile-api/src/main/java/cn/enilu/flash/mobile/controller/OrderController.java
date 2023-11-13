@@ -2,6 +2,7 @@ package cn.enilu.flash.mobile.controller;
 
 import cn.enilu.flash.bean.constant.factory.PageFactory;
 import cn.enilu.flash.bean.entity.shop.*;
+import cn.enilu.flash.bean.entity.system.User;
 import cn.enilu.flash.bean.enumeration.shop.OrderEnum;
 import cn.enilu.flash.bean.vo.front.Rets;
 import cn.enilu.flash.bean.vo.query.SearchFilter;
@@ -10,6 +11,8 @@ import cn.enilu.flash.service.shop.AddressService;
 import cn.enilu.flash.service.shop.CartService;
 import cn.enilu.flash.service.shop.OrderService;
 import cn.enilu.flash.service.system.CfgService;
+import cn.enilu.flash.security.UserService;
+//import cn.enilu.flash.service.system.U;
 import cn.enilu.flash.utils.HttpUtil;
 import cn.enilu.flash.utils.Lists;
 import cn.enilu.flash.utils.Maps;
@@ -44,6 +47,8 @@ public class OrderController extends BaseController {
     private CfgService cfgService;
     @Autowired
     private KdniaoService kdniaoService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "{orderSn}", method = RequestMethod.GET)
     public Object get(@PathVariable(value = "orderSn") String orderSn) {
@@ -91,7 +96,8 @@ public class OrderController extends BaseController {
     public Object save(
             @RequestParam("idAddress") Long idAddress,
             @RequestParam(value = "message", required = false) String message,
-            @RequestParam(value = "idCarts") String idCarts
+            @RequestParam(value = "idCarts") String idCarts,
+            @RequestParam(value = "busCode") String busCode
     ) {
 
         Long idUser = getIdUser();
@@ -100,13 +106,15 @@ public class OrderController extends BaseController {
                 SearchFilter.build("id", SearchFilter.Operator.IN, StringUtil.splitForLong(idCarts, ","))
         );
         List<Cart> cartList = cartService.queryAll(filters);
-
+        User user = userService.getUserByBusCode(busCode);
         Order order = new Order();
+        order.setBusUserId(user.getId());
         order.setIdUser(idUser);
         Address address = addressService.get(idAddress);
         order.setConsignee(address.getName());
         order.setConsigneeAddress(address.getWholeAddressInfo());
         order.setMobile(address.getTel());
+
         BigDecimal totalPrice = new BigDecimal(0);
         List<OrderItem> itemList = Lists.newArrayList();
         for (Cart cart : cartList) {
@@ -151,4 +159,5 @@ public class OrderController extends BaseController {
         );
         return Rets.success(data);
     }
+
 }

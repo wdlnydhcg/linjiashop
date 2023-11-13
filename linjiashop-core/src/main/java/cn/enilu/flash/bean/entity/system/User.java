@@ -46,4 +46,6 @@ public class User  extends BaseEntity {
     private Integer status;
     @Column
     private Integer version;
+    @Column
+    private String busCode;
 }

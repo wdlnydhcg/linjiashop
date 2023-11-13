@@ -44,4 +44,18 @@ public class CategoryController extends BaseController {
         });
         return Rets.success(list);
     }
+    @RequestMapping(value = "/categoryAndGoods",method = RequestMethod.GET)
+    public Object categoryAndGoods() {
+        List<CategoryNode> list = categoryService.getCategoriesAndGoods(Lists.newArrayList(SearchFilter.build("showIndex",true)));
+        list.forEach(item->{
+            List<CategoryBannerRel> relList = categoryBannerRelService.queryAll(SearchFilter.build("idCategory",item.getId()));
+            List<Banner> bannerList = Lists.newArrayList();
+            relList.forEach( relItem->{
+                bannerList.add(relItem.getBanner());
+            });
+
+            item.setBannerList(bannerList);
+        });
+        return Rets.success(list);
+    }
 }

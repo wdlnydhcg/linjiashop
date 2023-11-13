@@ -34,6 +34,7 @@ public class UserDto{
 	private Integer status;
 	private Integer version;
 	private String avatar;
+	private String busCode;
 
 
 }

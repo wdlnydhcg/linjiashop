@@ -1,5 +1,5 @@
 import { deleteUser, getList, saveUser, remove, setRole } from '@/api/system/user'
-import { list as deptList } from '@/api/system/dept'
+import { list as deptList, roleList } from '@/api/system/dept'
 import { parseTime } from '@/utils/index'
 import { roleTreeListByIdUser } from '@/api/system/role'
 // 权限判断指令
@@ -32,20 +32,30 @@ export default {
           children: 'children'
         }
       },
+      roleTreeData: {
+        show: false,
+        data: [],
+        defaultProps: {
+          id: 'id',
+          label: 'name'
+        }
+      },
       isAdd: true,
       form: {
         id: '',
         account: '',
         name: '',
         birthday: '',
-        sex: 1,
+        // sex: 1,
         email: '',
         password: '',
         rePassword: '',
         dept: '',
         status: true,
         deptid: 1,
-        deptName: ''
+        deptName: '',
+        roleid: '',
+        roleName: ''
       },
       rules: {
         account: [
@@ -65,7 +75,8 @@ export default {
         limit: 20,
         account: undefined,
         name: undefined,
-        sex:undefined
+        // sex: undefined,
+        role: undefined
       },
       total: 0,
       list: null,
@@ -91,6 +102,10 @@ export default {
       deptList().then(response => {
         this.deptTree.data = response.data
       })
+      roleList().then(response => {
+        this.roleTreeData.data = response.data
+      })
+
       this.fetchData()
     },
     fetchData() {
@@ -109,7 +124,7 @@ export default {
       this.listQuery.account = ''
       this.listQuery.name = ''
       this.listQuery.page = 1
-      this.listQuery.sex=''
+      this.listQuery.role = ''
       this.fetchData()
     },
     handleFilter() {
@@ -144,13 +159,16 @@ export default {
         account: '',
         name: '',
         birthday: '',
-        sex: 1,
+        // sex: 1,
+        role:'',
         email: '',
         password: '',
         rePassword: '',
         dept: '',
         status: true,
-        deptid: 1
+        deptid: 1,
+        roleid: '',
+        roleName: ''
       }
     },
     add() {
@@ -178,10 +196,10 @@ export default {
           if (this.validPasswd()) {
             var form = self.form
             if (form.status === true) {
-              //启用
+              //  启用
               form.status = 1
             } else {
-              //冻结
+              //  冻结
               form.status = 2
             }
 
@@ -241,8 +259,8 @@ export default {
               type: 'success'
             })
             this.fetchData()
-          }).catch( err=>{
-
+          }).catch(err => {
+            console.log(err)
           })
         }).catch(() => {
         })
@@ -252,6 +270,12 @@ export default {
       this.form.deptid = data.id
       this.form.deptName = data.simplename
       this.deptTree.show = false
+    },
+    handleRoleNodeClick(data, node) {
+      console.log('data  ', data)
+      this.form.roleid = data.id
+      this.form.roleName = data.name
+      this.roleTreeData.show = false
     },
 
     openRole() {

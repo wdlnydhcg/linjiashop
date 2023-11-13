@@ -29,6 +29,7 @@ export default {
     shopMgr: 'Shop',
     category: 'Categories',
     shopUser: 'Customer',
+    shopHome: 'Home',
     shopUserDetail: 'Customer Detail',
     goods: 'Goods',
     goodsEdit: 'Edit Goods',

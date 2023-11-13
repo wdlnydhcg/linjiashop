@@ -12,7 +12,6 @@ import cn.enilu.flash.bean.exception.ApplicationExceptionEnum;
 import cn.enilu.flash.bean.vo.front.Rets;
 import cn.enilu.flash.bean.vo.query.SearchFilter;
 import cn.enilu.flash.core.factory.UserFactory;
-import cn.enilu.flash.service.system.LogObjectHolder;
 import cn.enilu.flash.service.system.ManagerService;
 import cn.enilu.flash.utils.BeanUtil;
 import cn.enilu.flash.utils.MD5;
@@ -46,7 +45,7 @@ public class UserController extends BaseController {
     @RequiresPermissions(value = {Permission.USER})
     public Object list(@RequestParam(required = false) String account,
                        @RequestParam(required = false) String name,
-                       @RequestParam(required = false) Integer sex){
+                       @RequestParam(required = false) String role){
         Page page = new PageFactory().defaultPage();
         if(StringUtil.isNotEmpty(name)){
             page.addFilter(SearchFilter.build("name", SearchFilter.Operator.LIKE, name));
@@ -55,7 +54,7 @@ public class UserController extends BaseController {
             page.addFilter(SearchFilter.build("account", SearchFilter.Operator.LIKE, account));
         }
         page.addFilter( "status",SearchFilter.Operator.GT,0);
-        page.addFilter("sex", sex);
+        page.addFilter("roleid", role);
         page = managerService.queryPage(page);
         List list = (List) new UserWarpper(BeanUtil.objectsToMaps(page.getRecords())).warp();
         page.setRecords(list);
@@ -74,15 +73,27 @@ public class UserController extends BaseController {
             if(user.getPassword()==null){
                 return Rets.failure("密码不能为空");
             }
+            if(user.getRoleid().equals('3')){
+                String busCode = RandomUtil.getRandomString(4);
+                while(true){
+                    if(!managerService.judgedOnlyBusCode(busCode)){
+                        busCode = RandomUtil.getRandomString(4);
+                    } else {
+                        break;
+                    }
+                }
+                user.setBusCode(busCode);
+            }
             // 完善账号信息
             user.setSalt(RandomUtil.getRandomString(5));
             user.setPassword(MD5.md5(user.getPassword(), user.getSalt()));
             user.setStatus(ManagerStatus.OK.getCode());
+
             managerService.insert(UserFactory.createUser(user, new User()));
         }else{
 
             User oldUser = managerService.get(user.getId());
-            LogObjectHolder.me().set(oldUser);
+//            LogObjectHolder.me().set(oldUser);
             managerService.update(UserFactory.updateUser(user,oldUser));
         }
         return Rets.success();

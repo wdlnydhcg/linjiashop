@@ -76,10 +76,13 @@ public class DictController extends BaseController {
         dictService.delteDict(id);
         return Rets.success();
     }
-    @RequestMapping(value = "/getDicts/{dictName}", method = RequestMethod.GET)
-    public Object getDicts(@PathVariable("dictName") String dictName) {
-        List<Dict> dicts = dictCache.getDictsByPname(dictName);
-        return Rets.success(dicts);
+    @RequestMapping(value = "/getDicts", method = RequestMethod.GET)
+    public Object getDicts(@RequestParam String dictName) {
+        if(StringUtil.isNotEmpty(dictName)){
+            List<Dict> dicts = dictCache.getDictsByPname(dictName);
+            return Rets.success(dicts);
+        }
+        return Rets.success();
     }
 
 }

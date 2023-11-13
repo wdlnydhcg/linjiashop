@@ -2,17 +2,16 @@ package cn.enilu.flash.mobile.controller;
 
 import cn.enilu.flash.bean.entity.shop.ShopUser;
 import cn.enilu.flash.bean.entity.system.FileInfo;
-import cn.enilu.flash.bean.vo.JwtUser;
 import cn.enilu.flash.bean.vo.UserInfo;
 import cn.enilu.flash.bean.vo.front.Rets;
 import cn.enilu.flash.bean.vo.shop.WechatInfo;
 import cn.enilu.flash.cache.CacheDao;
 import cn.enilu.flash.security.JwtUtil;
+import cn.enilu.flash.security.UserService;
 import cn.enilu.flash.service.api.WeixinService;
 import cn.enilu.flash.service.shop.ShopUserService;
 import cn.enilu.flash.service.system.FileService;
 import cn.enilu.flash.utils.MD5;
-import cn.enilu.flash.utils.RandomUtil;
 import cn.enilu.flash.utils.StringUtil;
 import cn.enilu.flash.web.controller.BaseController;
 import org.springframework.beans.BeanUtils;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +31,8 @@ import java.util.Map;
 public class UserController extends BaseController {
     @Autowired
     private ShopUserService shopUserService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private WeixinService weixinService;
     @Autowired
@@ -112,6 +111,12 @@ public class UserController extends BaseController {
         boolean wxAuth = weixinService.isAuth(user,code);
         return wxAuth? Rets.success():Rets.failure("获取openid失败");
     }
+    @RequestMapping(value = "getWxOpenIdByJscode2session",method = RequestMethod.POST)
+    public  Object getWxOpenIdByJscode2session(String code, HttpServletRequest request) {
+        ShopUser user = shopUserService.getCurrentUser();
+        boolean wxAuth = weixinService.isAuth(user,code);
+        return wxAuth? Rets.success():Rets.failure("获取openid失败");
+    }
     @RequestMapping(value = "getWxSign", method = RequestMethod.POST)
     public Object getWxSign(@RequestParam("url") String url) {
         Map<String, String> map = weixinService.getSign(url);
@@ -129,6 +134,16 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             logger.error("上传头像失败",e);
             return Rets.failure("上传头像失败");
+        }
+    }
+
+    @RequestMapping(value = "/judgedBusCodeExit/{busCode}", method = RequestMethod.GET)
+    public Object judgedBusCode(@PathVariable(value = "busCode") String busCode){
+        Boolean isExit = userService.busCodeIsExit(busCode);
+        if(isExit){
+            return Rets.success("经销码存在");
+        }else{
+            return Rets.failure("经销码不存在");
         }
     }
 }

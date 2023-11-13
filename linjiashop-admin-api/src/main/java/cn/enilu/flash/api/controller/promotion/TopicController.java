@@ -42,7 +42,7 @@ public class TopicController {
 	@RequiresPermissions(value = {Permission.TOPIC_EDIT})
 	public Object save(@ModelAttribute Topic topic){
 		if(topic.getId()==null){
-			topic.setPv(0L);
+				topic.setPv(0L);
 			topicService.insert(topic);
 		}else {
 			topicService.update(topic);

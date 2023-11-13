@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GoodsService extends BaseService<Goods,Long,GoodsRepository>  {
+public class GoodsService extends BaseService<Goods,Long,GoodsRepository> {
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private GoodsRepository goodsRepository;

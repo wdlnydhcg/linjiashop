@@ -35,9 +35,13 @@ export function remove(id) {
   })
 }
 
-export  function  getDicts(dictName) {
+export function getDicts(dictName) {
+  // const name = decodeURI(dictName)
   return request({
-    url:'/dict/getDicts/'+dictName,
-    method:'get'
+    url:'/dict/getDicts',
+    method:'get',
+    params:{
+      dictName
+    }
   })
 }

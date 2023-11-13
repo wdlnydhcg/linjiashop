@@ -75,6 +75,24 @@ public class WeChatController extends BaseController {
         }
         return Rets.success(result);
     }
+
+
+    @RequestMapping(value = "getOnlyWxOpenId", method = RequestMethod.POST)
+    public Object getOnlyWxOpenId(@RequestParam("code") String code) {
+        Map result = weixinService.getJscode2session(code);
+        if(result == null){
+            return Rets.failure("小程序未登录");
+        }
+        String openid = (String) result.get("openid");
+        if(openid != null && !openid.equals("")){
+            ShopUser loginUser = shopUserService.getCurrentUser();
+            if(loginUser.getWechatOpenId() == null || loginUser.getWechatOpenId().equals("")){
+                loginUser.setWechatOpenId(openid);
+                shopUserService.update(loginUser);
+            }
+        }
+        return Rets.success(result);
+    }
     private Map login(ShopUser shopUser){
         String token = userService.loginForToken(new JwtUser(shopUser));
         shopUser.setLastLoginTime(new Date());
@@ -94,4 +112,11 @@ public class WeChatController extends BaseController {
         Map<String, String> map = weixinService.getSign(url);
         return Rets.success(map);
     }
+
+//    @RequestMapping(value = "getWxOpenIdByJscode", method = RequestMethod.POST)
+//    public Object getWxOpenId(@RequestParam("url") String code) {
+//
+//        return null;
+//    }
+
 }

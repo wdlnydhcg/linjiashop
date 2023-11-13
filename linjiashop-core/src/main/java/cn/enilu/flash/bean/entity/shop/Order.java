@@ -91,6 +91,8 @@ public class Order extends ShopBaseEntity {
     private String payId;
     @Column(columnDefinition = "VARCHAR(32) COMMENT '支付成功时间'")
     private Date payTime;
+    @Column(columnDefinition = "BIGINT COMMENT '经销商用户id'")
+    private Long busUserId;
 
 
     public String getStatusName(){
@@ -110,6 +112,13 @@ public class Order extends ShopBaseEntity {
             return OrderEnum.get(payType).getValue();
         }
         return null;
+    }
+    public Long getBusUserId() {
+        return busUserId;
+    }
+
+    public void setBusUserId(Long busUserId) {
+        this.busUserId = busUserId;
     }
 
     public Boolean hasPayed(){

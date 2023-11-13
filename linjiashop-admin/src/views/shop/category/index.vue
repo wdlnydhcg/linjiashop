@@ -66,7 +66,7 @@
             <el-form-item label="图片">
               <el-upload
                 drag
-                multiple=false
+                :multiple='false'
                 :action="uploadUrl"
                 :headers="uploadHeaders"
                 :before-upload="handleBeforeUpload"

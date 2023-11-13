@@ -12,5 +12,7 @@ import cn.enilu.flash.dao.BaseRepository;
 public interface UserRepository extends BaseRepository<User,Long> {
     User findByAccount(String account);
 
+    User findByBusCode(String busCode);
+
     User findByAccountAndStatusNot(String account, Integer status);
 }

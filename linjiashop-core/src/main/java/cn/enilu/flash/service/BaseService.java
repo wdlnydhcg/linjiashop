@@ -83,6 +83,7 @@ public abstract class BaseService<T, ID extends Serializable, R extends BaseRepo
         return dao.getBySql(sql,klass);
     }
 
+
     @Override
     public List<T> query(Iterable<ID> ids) {
         return dao.findAllById(ids);

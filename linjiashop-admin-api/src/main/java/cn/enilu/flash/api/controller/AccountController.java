@@ -18,10 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -153,5 +150,15 @@ public class AccountController extends BaseController {
         }
         return Rets.failure("更改密码失败");
     }
+
+//    @RequestMapping(value = "judgedBusCodeExit/{busCode}", method = RequestMethod.GET)
+//    public Object judgedBusCode(@PathVariable(value = "busCode") String busCode){
+//        Boolean isExit = userService.busCodeIsExit(busCode);
+//        if(isExit){
+//            return Rets.success("经销码存在");
+//        }else{
+//            return Rets.failure("经销码不存在");
+//        }
+//    }
 
 }

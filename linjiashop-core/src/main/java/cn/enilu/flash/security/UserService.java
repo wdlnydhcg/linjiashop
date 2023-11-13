@@ -141,5 +141,19 @@ public class UserService {
         return token;
     }
 
+    public boolean busCodeIsExit(String busCode){
+        User user = userRepository.findByBusCode(busCode);
+        if (user == null){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    public User getUserByBusCode(String busCode){
+        User user = userRepository.findByBusCode(busCode);
+        return user;
+    }
+
 
 }

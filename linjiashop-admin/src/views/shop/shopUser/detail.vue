@@ -8,7 +8,7 @@
 
         <el-col :span="12">
           <el-form-item label="头像">
-            <el-avatar   :src="avatarUrl" ></el-avatar>
+            <el-avatar :src="avatarUrl" ></el-avatar>
 
           </el-form-item>
         </el-col>

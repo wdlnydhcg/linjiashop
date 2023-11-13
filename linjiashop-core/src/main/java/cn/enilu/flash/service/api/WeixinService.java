@@ -88,6 +88,7 @@ public class WeixinService {
 
     public Map<String, Object> getPrivateAccessToken(String code) {
         String url = "https://api.weixin.qq.com/sns/oauth2/access_token";
+
         url += "?appid=" + cfgService.getCfgValue(CfgKey.WX_APP_ID);
         url += "&secret=" + cfgService.getCfgValue(CfgKey.WX_APP_SECRET);
         url += "&code=" + code;
@@ -97,8 +98,33 @@ public class WeixinService {
             Object object = Json.fromJson(StringUtil.sNull(result));
 
             logger.info("url:" + url + ";  response:" + Json.toJson(object));
-            String access_token = (String) Mapl.cell(object, "access_token");
-            if (StringUtil.isNotEmpty(access_token)) {
+            String session_key = (String) Mapl.cell(object, "session_key");
+            String openid = (String) Mapl.cell(object, "openid");
+            if (StringUtil.isNotEmpty(session_key) && StringUtil.isNotEmpty(openid)) {
+                return (Map) object;
+            }
+        } catch (Exception e) {
+            logger.error("获取token失败", e);
+        }
+        return null;
+    }
+
+    public Map<String, Object> getJscode2session(String code) {
+//        String url = "https://api.weixin.qq.com/sns/oauth2/access_token";
+        String url = "https://api.weixin.qq.com/sns/jscode2session";
+        url += "?appid=" + cfgService.getCfgValue(CfgKey.WX_APP_ID);
+        url += "&secret=" + cfgService.getCfgValue(CfgKey.WX_APP_SECRET);
+        url += "&js_code=" + code;
+        url += "&grant_type=authorization_code";
+        try {
+            String result = Http.get(url).getContent();
+            Object object = Json.fromJson(StringUtil.sNull(result));
+
+            logger.info("url:" + url + ";  response:" + Json.toJson(object));
+            String session_key = (String) Mapl.cell(object, "session_key");
+            String openid = (String) Mapl.cell(object, "openid");
+
+            if (StringUtil.isNotEmpty(session_key) && StringUtil.isNotEmpty(openid)) {
                 return (Map) object;
             }
         } catch (Exception e) {
@@ -138,6 +164,7 @@ public class WeixinService {
 
         return false;
     }
+
 
     public WechatInfo getWechatInfoByCode(String code) {
         Map<String, Object> ret = getPrivateAccessToken(code);

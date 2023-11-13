@@ -9,8 +9,11 @@
           <el-input v-model="listQuery.name" size="mini" placeholder="请输入姓名"></el-input>
         </el-col>
         <el-col :span="6">
-          <dict-select v-model="listQuery.sex" dict-name="性别" placeholder="请选择性别"/>
+          <role-select v-model="listQuery.role" dict-name="角色" placeholder="请选择角色"/>
         </el-col>
+<!--        <el-col :span="6">-->
+<!--          <dict-select v-model="listQuery.sex" dict-name="性别" placeholder="请选择性别"/>-->
+<!--        </el-col>-->
         <el-col :span="6">
           <el-button type="success" size="mini" icon="el-icon-search" @click.native="search">{{
             $t('button.search')
@@ -43,7 +46,6 @@
 
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row
               @current-change="handleCurrentChange">
-
       <el-table-column label="账号">
         <template slot-scope="scope">
           {{ scope.row.account }}
@@ -84,13 +86,16 @@
           {{ scope.row.createTime }}
         </template>
       </el-table-column>
+      <el-table-column label="经销码">
+        <template slot-scope="scope">
+          {{ scope.row.busCode }}
+        </template>
+      </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
           {{ scope.row.statusName }}
         </template>
       </el-table-column>
-
-
     </el-table>
 
     <el-pagination
@@ -167,7 +172,24 @@
                        @node-click="handleNodeClick"
                        class="input-tree">
               </el-tree>
-
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-input
+                placeholder="请选择角色"
+                v-model="form.roleName"
+                readonly="readonly"
+                @click.native="roleTreeData.show  = !roleTreeData.show">
+              </el-input>
+              <el-tree v-if="roleTreeData.show"
+                       empty-text="暂无数据"
+                       :expand-on-click-node="false"
+                       :data="roleTreeData.data"
+                       :props="roleTreeData.defaultProps"
+                       @node-click="handleRoleNodeClick"
+                       class="input-tree">
+              </el-tree>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -178,7 +200,6 @@
           <el-col :span="12">
             <el-form-item label="出生日期">
               <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" style="width: 100%;">
-
               </el-date-picker>
             </el-form-item>
           </el-col>

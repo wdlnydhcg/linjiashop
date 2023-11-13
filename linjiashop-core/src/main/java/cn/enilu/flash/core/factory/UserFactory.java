@@ -25,6 +25,8 @@ public class UserFactory {
             return null;
         }else{
             user.setName(userDto.getName());
+            user.setAccount(userDto.getAccount());
+            user.setRoleid(userDto.getRoleid());
             user.setDeptid(userDto.getDeptid());
             user.setSex(userDto.getSex());
             user.setPhone(userDto.getPhone());
